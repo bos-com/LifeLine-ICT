@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 
 from ..core.config import settings
 from ..schemas import (
@@ -115,13 +115,15 @@ async def partial_update_ticket(
 @router.delete(
     "/{ticket_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
 )
 async def delete_ticket(
     ticket_id: int,
     service: MaintenanceTicketService = Depends(get_ticket_service),
-) -> None:
+) -> Response:
     """
     Delete a maintenance ticket.
     """
 
     await service.delete_ticket(ticket_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

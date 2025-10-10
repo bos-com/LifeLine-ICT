@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 
 from ..core.config import settings
 from ..schemas import (
@@ -112,13 +112,15 @@ async def partial_update_sensor_site(
 @router.delete(
     "/{site_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
 )
 async def delete_sensor_site(
     site_id: int,
     service: SensorSiteService = Depends(get_sensor_site_service),
-) -> None:
+) -> Response:
     """
     Delete a sensor site from the registry.
     """
 
     await service.delete_sensor_site(site_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 
 from ..core.config import settings
 from ..schemas import (
@@ -109,13 +109,15 @@ async def partial_update_location(
 @router.delete(
     "/{location_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
 )
 async def delete_location(
     location_id: int,
     service: LocationService = Depends(get_location_service),
-) -> None:
+) -> Response:
     """
     Delete a location once dependent resources have been removed.
     """
 
     await service.delete_location(location_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

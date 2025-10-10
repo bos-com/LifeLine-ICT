@@ -16,14 +16,14 @@ from ..schemas import BaseSchema, PaginatedResponse, PaginationMeta
 from .exceptions import NotFoundError
 
 
+SchemaType = TypeVar("SchemaType", bound=BaseSchema)
+
+
 class BaseService:
     """Provide convenience methods shared by concrete services."""
 
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-
-SchemaType = TypeVar("SchemaType", bound=BaseSchema)
-
 
     def build_paginated_response(
         self,

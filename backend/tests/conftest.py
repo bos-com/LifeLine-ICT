@@ -7,8 +7,9 @@ from collections.abc import AsyncIterator, Generator
 from typing import AsyncGenerator
 
 import pytest
+import pytest_asyncio
 from fastapi import FastAPI
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -23,15 +24,6 @@ from ..app.core.database import Base
 
 
 @pytest.fixture(scope="session")
-def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
-    """Provide an event loop for the async tests."""
-
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
-@pytest.fixture(scope="session")
 def test_engine() -> AsyncEngine:
     """Create an in-memory SQLite engine for tests."""
 
@@ -42,7 +34,7 @@ def test_engine() -> AsyncEngine:
     )
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session", autouse=True)
 async def prepare_database(test_engine: AsyncEngine) -> AsyncIterator[None]:
     """Create all tables before running tests."""
 
@@ -53,7 +45,7 @@ async def prepare_database(test_engine: AsyncEngine) -> AsyncIterator[None]:
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def session(test_engine: AsyncEngine) -> AsyncIterator[AsyncSession]:
     """Yield a database session backed by the test engine."""
 
@@ -63,7 +55,7 @@ async def session(test_engine: AsyncEngine) -> AsyncIterator[AsyncSession]:
         await session.rollback()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def app(session: AsyncSession) -> AsyncIterator[FastAPI]:
     """Create a FastAPI app instance with test overrides."""
 
@@ -77,9 +69,10 @@ async def app(session: AsyncSession) -> AsyncIterator[FastAPI]:
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
     """HTTPX client bound to the FastAPI test app."""
 
-    async with AsyncClient(app=app, base_url="http://testserver") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://testserver") as client:
         yield client

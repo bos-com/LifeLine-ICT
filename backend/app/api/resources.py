@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 
 from ..core.config import settings
 from ..schemas import (
@@ -112,13 +112,15 @@ async def partial_update_resource(
 @router.delete(
     "/{resource_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
 )
 async def delete_resource(
     resource_id: int,
     service: ResourceService = Depends(get_resource_service),
-) -> None:
+) -> Response:
     """
     Delete a resource once unresolved tickets have been cleared.
     """
 
     await service.delete_resource(resource_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
