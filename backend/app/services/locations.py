@@ -8,6 +8,9 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
+
 from ..models import ICTResource, Location, SensorSite
 from ..repositories import LocationRepository
 from ..schemas import (
@@ -63,7 +66,12 @@ class LocationService(BaseService):
     async def create_location(self, payload: LocationCreate) -> LocationRead:
         """Create a new location."""
 
-        location = await self.repository.create(payload.dict())
+        data = payload.dict()
+        if geom := data.pop("geom", None):
+            point = Point(geom["lon"], geom["lat"])
+            data["geom"] = from_shape(point, srid=4326)
+
+        location = await self.repository.create(data)
         logger.info("Created location %s - %s", location.campus, location.building)
         return LocationRead.from_orm(location)
 
@@ -78,9 +86,15 @@ class LocationService(BaseService):
             await self.repository.get(location_id),
             f"Location {location_id} not found.",
         )
+
+        data = payload.dict(exclude_unset=True)
+        if geom := data.pop("geom", None):
+            point = Point(geom["lon"], geom["lat"])
+            data["geom"] = from_shape(point, srid=4326)
+
         updated = await self.repository.update(
             location,
-            payload.dict(exclude_unset=True),
+            data,
         )
         logger.info("Updated location %s", location_id)
         return LocationRead.from_orm(updated)
