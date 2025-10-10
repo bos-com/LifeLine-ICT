@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from geoalchemy2 import Geometry
-from sqlalchemy import String
+from sqlalchemy import Float, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..core.database import Base
@@ -38,10 +37,15 @@ class Location(TimestampMixin, Base):
         nullable=True,
         doc="Room or rack identifier within the building.",
     )
-    geom: Mapped[Optional[Geometry]] = mapped_column(
-        Geometry(geometry_type='POINT', srid=4326),
+    latitude: Mapped[Optional[float]] = mapped_column(
+        Float,
         nullable=True,
-        doc="Geographic coordinates (Point) for GIS overlays.",
+        doc="Latitude in decimal degrees for GIS overlays.",
+    )
+    longitude: Mapped[Optional[float]] = mapped_column(
+        Float,
+        nullable=True,
+        doc="Longitude in decimal degrees for GIS overlays.",
     )
 
     resources: Mapped[List["ICTResource"]] = relationship(

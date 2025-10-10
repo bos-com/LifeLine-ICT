@@ -4,18 +4,9 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import Field, model_validator
-from geoalchemy2.elements import WKBElement
-from geoalchemy2.shape import to_shape
+from pydantic import Field
 
 from .base import BaseSchema
-
-
-class PointSchema(BaseSchema):
-    """Schema for representing a point geometry."""
-
-    lat: float = Field(..., ge=-90, le=90)
-    lon: float = Field(..., ge=-180, le=180)
 
 
 class LocationBase(BaseSchema):
@@ -36,9 +27,17 @@ class LocationBase(BaseSchema):
         max_length=50,
         description="Room or rack identifier.",
     )
-    geom: Optional[PointSchema] = Field(
+    latitude: Optional[float] = Field(
         default=None,
-        description="Geographic coordinates.",
+        ge=-90,
+        le=90,
+        description="Latitude in decimal degrees.",
+    )
+    longitude: Optional[float] = Field(
+        default=None,
+        ge=-180,
+        le=180,
+        description="Longitude in decimal degrees.",
     )
 
 
@@ -66,9 +65,17 @@ class LocationUpdate(BaseSchema):
         max_length=50,
         description="Room or rack identifier.",
     )
-    geom: Optional[PointSchema] = Field(
+    latitude: Optional[float] = Field(
         default=None,
-        description="Geographic coordinates.",
+        ge=-90,
+        le=90,
+        description="Latitude in decimal degrees.",
+    )
+    longitude: Optional[float] = Field(
+        default=None,
+        ge=-180,
+        le=180,
+        description="Longitude in decimal degrees.",
     )
 
 
@@ -76,11 +83,3 @@ class LocationRead(LocationBase):
     """Representation returned by the API."""
 
     id: int = Field(..., description="Unique identifier.")
-
-    @model_validator(mode="before")
-    @classmethod
-    def translate_geom(cls, data):
-        if isinstance(data, dict) and "geom" in data and isinstance(data["geom"], WKBElement):
-            shape = to_shape(data["geom"])
-            data["geom"] = {"lat": shape.y, "lon": shape.x}
-        return data

@@ -21,7 +21,6 @@ from ..services import (
     ProjectService,
     ResourceService,
     SensorSiteService,
-    AnalyticsService,
 )
 
 
@@ -96,9 +95,3 @@ async def get_sensor_site_service(
     """Provide a `SensorSiteService` instance per request."""
 
     yield SensorSiteService(session)
-
-
-async def get_analytics_service() -> AsyncIterator[AnalyticsService]:
-    """Provide an `AnalyticsService` instance per request."""
-
-    yield AnalyticsService()

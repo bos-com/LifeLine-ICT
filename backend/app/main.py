@@ -17,8 +17,6 @@ from .api import (
     projects_router,
     resources_router,
     sensor_sites_router,
-    analytics_router,
-    alert_router,
 )
 
 
@@ -60,8 +58,6 @@ def create_app() -> FastAPI:
     app.include_router(locations_router)
     app.include_router(maintenance_tickets_router)
     app.include_router(sensor_sites_router)
-    app.include_router(analytics_router)
-    app.include_router(alert_router)
 
     @app.get("/health", tags=["health"])
     async def healthcheck() -> dict[str, str]:
