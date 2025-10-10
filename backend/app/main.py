@@ -10,6 +10,14 @@ from fastapi import FastAPI
 
 from .core.config import settings
 from .core.logging import configure_logging
+from .api import (
+    errors,
+    locations_router,
+    maintenance_tickets_router,
+    projects_router,
+    resources_router,
+    sensor_sites_router,
+)
 
 
 def create_app() -> FastAPI:
@@ -42,6 +50,14 @@ def create_app() -> FastAPI:
             "identifier": "MIT",
         },
     )
+
+    errors.register_exception_handlers(app)
+
+    app.include_router(projects_router)
+    app.include_router(resources_router)
+    app.include_router(locations_router)
+    app.include_router(maintenance_tickets_router)
+    app.include_router(sensor_sites_router)
 
     @app.get("/health", tags=["health"])
     async def healthcheck() -> dict[str, str]:
