@@ -7,10 +7,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.alert import Alert
-from .base import BaseRepository
+from .base import AsyncRepository
 
 
-class AlertRepository(BaseRepository[Alert]):
+class AlertRepository(AsyncRepository[Alert]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Alert)
 

@@ -82,6 +82,22 @@ The suite provisions an in-memory SQLite database and covers both service-level
 rules (such as blocking resource deletion while tickets remain open) and API
 contracts.
 
+### Database Migrations
+
+This project uses [Alembic](https://alembic.sqlalchemy.org/en/latest/) for database migrations.
+
+To create a new migration, run:
+
+```bash
+alembic revision --autogenerate -m "<migration_message>"
+```
+
+To apply migrations to the database, run:
+
+```bash
+alembic upgrade head
+```
+
 ### Data Model Highlights
 
 The backend models capture the following relationships:

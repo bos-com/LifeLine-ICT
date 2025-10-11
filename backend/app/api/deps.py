@@ -13,6 +13,58 @@ from ..services.auth_service import SECRET_KEY, ALGORITHM
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 
+from ..services.sensor_sites import SensorSiteService
+
+def get_sensor_site_service(
+    session: AsyncSession = Depends(get_session),
+) -> SensorSiteService:
+    return SensorSiteService(session)
+
+
+from ..services.resources import ResourceService
+
+def get_resource_service(
+    session: AsyncSession = Depends(get_session),
+) -> ResourceService:
+    return ResourceService(session)
+
+
+from ..services.projects import ProjectService
+
+def get_project_service(
+    session: AsyncSession = Depends(get_session),
+) -> ProjectService:
+    return ProjectService(session)
+
+
+from ..services.maintenance_tickets import MaintenanceTicketService
+
+def get_ticket_service(
+    session: AsyncSession = Depends(get_session),
+) -> MaintenanceTicketService:
+    return MaintenanceTicketService(session)
+
+
+from ..schemas.base import PaginationQuery
+from ..core.config import settings
+
+def get_pagination_params(
+    limit: int = settings.pagination_default_limit,
+    offset: int = 0,
+    search: str = None,
+) -> PaginationQuery:
+    return PaginationQuery(limit=limit, offset=offset, search=search)
+
+
+from ..services.locations import LocationService
+
+
+def get_location_service(
+    session: AsyncSession = Depends(get_session),
+) -> LocationService:
+    return LocationService(session)
+
+
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_session),
