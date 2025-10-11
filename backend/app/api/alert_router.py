@@ -9,7 +9,14 @@ from ..models.alert import Alert
 from ..repositories.alert_repository import AlertRepository
 from ..services.alert_service import AlertService
 
-router = APIRouter(prefix="/api/v1/alerts", tags=["Alerts"])
+from ..models.user import User
+from .deps import get_current_user
+
+router = APIRouter(
+    prefix="/api/v1/alerts",
+    tags=["Alerts"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def get_alert_service(session: AsyncSession = Depends(get_session)) -> AlertService:

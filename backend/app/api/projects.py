@@ -15,7 +15,14 @@ from ..schemas import (
 from ..services import ProjectService
 from .deps import get_pagination_params, get_project_service
 
-router = APIRouter(prefix="/api/v1/projects", tags=["Projects"])
+from ..models.user import User
+from .deps import get_current_user
+
+router = APIRouter(
+    prefix="/api/v1/projects",
+    tags=["Projects"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get(

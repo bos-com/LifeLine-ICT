@@ -15,7 +15,14 @@ from ..schemas import (
 from ..services import ResourceService
 from .deps import get_pagination_params, get_resource_service
 
-router = APIRouter(prefix="/api/v1/resources", tags=["ICT Resources"])
+from ..models.user import User
+from .deps import get_current_user
+
+router = APIRouter(
+    prefix="/api/v1/resources",
+    tags=["Resources"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get(

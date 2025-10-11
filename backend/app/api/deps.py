@@ -1,104 +1,36 @@
-"""
-Dependency injection helpers for FastAPI routers.
-
-The dependency functions construct service instances per request while reusing
-the shared database session provided by `get_session`.
-"""
-
 from __future__ import annotations
 
-from typing import AsyncIterator, Optional
-
-from fastapi import Depends, Query
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..core.config import settings
 from ..core.database import get_session
-from ..schemas import PaginationQuery
-from ..services import (
-    LocationService,
-    MaintenanceTicketService,
-    ProjectService,
-    ResourceService,
-    SensorSiteService,
-    AnalyticsService,
-)
+from ..models.user import User
+from ..repositories.user_repository import UserRepository
+from ..services.auth_service import SECRET_KEY, ALGORITHM
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 
-async def get_db_session() -> AsyncIterator[AsyncSession]:
-    """
-    Yield an async SQLAlchemy session for request handlers.
-    """
-
-    async for session in get_session():
-        yield session
-
-
-def get_pagination_params(
-    limit: Optional[int] = Query(
-        default=None,
-        ge=1,
-        le=settings.pagination_max_limit,
-        description="Maximum number of items to return.",
-    ),
-    offset: Optional[int] = Query(
-        default=None,
-        ge=0,
-        description="Starting index of the page.",
-    ),
-    search: Optional[str] = Query(
-        default=None,
-        description="Case-insensitive search term.",
-    ),
-) -> PaginationQuery:
-    """
-    Parse pagination query parameters into a schema.
-    """
-
-    return PaginationQuery(limit=limit, offset=offset, search=search)
-
-
-async def get_project_service(
-    session: AsyncSession = Depends(get_db_session),
-) -> AsyncIterator[ProjectService]:
-    """Provide a `ProjectService` instance per request."""
-
-    yield ProjectService(session)
-
-
-async def get_resource_service(
-    session: AsyncSession = Depends(get_db_session),
-) -> AsyncIterator[ResourceService]:
-    """Provide a `ResourceService` instance per request."""
-
-    yield ResourceService(session)
-
-
-async def get_location_service(
-    session: AsyncSession = Depends(get_db_session),
-) -> AsyncIterator[LocationService]:
-    """Provide a `LocationService` instance per request."""
-
-    yield LocationService(session)
-
-
-async def get_ticket_service(
-    session: AsyncSession = Depends(get_db_session),
-) -> AsyncIterator[MaintenanceTicketService]:
-    """Provide a `MaintenanceTicketService` instance per request."""
-
-    yield MaintenanceTicketService(session)
-
-
-async def get_sensor_site_service(
-    session: AsyncSession = Depends(get_db_session),
-) -> AsyncIterator[SensorSiteService]:
-    """Provide a `SensorSiteService` instance per request."""
-
-    yield SensorSiteService(session)
-
-
-async def get_analytics_service() -> AsyncIterator[AnalyticsService]:
-    """Provide an `AnalyticsService` instance per request."""
-
-    yield AnalyticsService()
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_session),
+) -> User:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_key, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    user_repository = UserRepository(session)
+    user = await user_repository.get_user_by_username(username)
+    if user is None:
+        raise credentials_exception
+    return user

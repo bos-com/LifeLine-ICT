@@ -15,7 +15,14 @@ from ..schemas import (
 from ..services import SensorSiteService
 from .deps import get_pagination_params, get_sensor_site_service
 
-router = APIRouter(prefix="/api/v1/sensor-sites", tags=["Sensor Sites"])
+from ..models.user import User
+from .deps import get_current_user
+
+router = APIRouter(
+    prefix="/api/v1/sensor-sites",
+    tags=["Sensor Sites"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get(

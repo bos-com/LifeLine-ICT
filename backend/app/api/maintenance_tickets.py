@@ -15,9 +15,13 @@ from ..schemas import (
 from ..services import MaintenanceTicketService
 from .deps import get_pagination_params, get_ticket_service
 
+from ..models.user import User
+from .deps import get_current_user
+
 router = APIRouter(
     prefix="/api/v1/maintenance-tickets",
     tags=["Maintenance Tickets"],
+    dependencies=[Depends(get_current_user)],
 )
 
 

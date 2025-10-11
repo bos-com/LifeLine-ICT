@@ -15,7 +15,14 @@ from ..schemas import (
 from ..services import LocationService
 from .deps import get_location_service, get_pagination_params
 
-router = APIRouter(prefix="/api/v1/locations", tags=["Locations"])
+from ..models.user import User
+from .deps import get_current_user
+
+router = APIRouter(
+    prefix="/api/v1/locations",
+    tags=["Locations"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get(
