@@ -9,7 +9,14 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..models import ICTResource, MaintenanceTicket, TicketStatus
+from ..models import (
+    AuditAction,
+    AuditEntityType,
+    ICTResource,
+    MaintenanceTicket,
+    TicketStatus,
+    User,
+)
 from ..repositories import MaintenanceTicketRepository
 from ..schemas import (
     PaginatedResponse,
@@ -19,6 +26,7 @@ from ..schemas import (
 )
 from .base import BaseService
 from .exceptions import ValidationError
+from .audit_trail import AuditTrailRecorder
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +37,7 @@ class MaintenanceTicketService(BaseService):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
         self.repository = MaintenanceTicketRepository(session)
+        self.audit_trail = AuditTrailRecorder(session, AuditEntityType.MAINTENANCE_TICKET)
 
     async def list_tickets(
         self,
@@ -61,7 +70,12 @@ class MaintenanceTicketService(BaseService):
         )
         return TicketRead.from_orm(ticket)
 
-    async def create_ticket(self, payload: TicketCreate) -> TicketRead:
+    async def create_ticket(
+        self,
+        payload: TicketCreate,
+        *,
+        actor: Optional[User] = None,
+    ) -> TicketRead:
         """Create a new maintenance ticket."""
 
         await self._validate_resource(payload.resource_id)
@@ -71,14 +85,26 @@ class MaintenanceTicketService(BaseService):
             closed_at=payload.closed_at,
         )
 
-        ticket = await self.repository.create(payload.dict())
+        data = payload.dict()
+        ticket = await self.repository.create(data)
         logger.info("Created maintenance ticket %s", ticket.id)
-        return TicketRead.from_orm(ticket)
+        result = TicketRead.from_orm(ticket)
+        await self.audit_trail.record(
+            action=AuditAction.CREATE,
+            entity_id=ticket.id,
+            entity_name=f"Ticket {ticket.id}",
+            summary="Maintenance ticket created",
+            actor=actor,
+            context={"payload": data},
+        )
+        return result
 
     async def update_ticket(
         self,
         ticket_id: int,
         payload: TicketUpdate,
+        *,
+        actor: Optional[User] = None,
     ) -> TicketRead:
         """Update an existing maintenance ticket."""
 
@@ -102,9 +128,23 @@ class MaintenanceTicketService(BaseService):
 
         updated = await self.repository.update(ticket, data)
         logger.info("Updated maintenance ticket %s", ticket_id)
-        return TicketRead.from_orm(updated)
+        result = TicketRead.from_orm(updated)
+        await self.audit_trail.record(
+            action=AuditAction.UPDATE,
+            entity_id=ticket.id,
+            entity_name=f"Ticket {ticket.id}",
+            summary="Maintenance ticket updated",
+            actor=actor,
+            context={"changes": data},
+        )
+        return result
 
-    async def delete_ticket(self, ticket_id: int) -> None:
+    async def delete_ticket(
+        self,
+        ticket_id: int,
+        *,
+        actor: Optional[User] = None,
+    ) -> None:
         """Delete a maintenance ticket."""
 
         ticket: MaintenanceTicket = self.ensure_entity(
@@ -113,6 +153,14 @@ class MaintenanceTicketService(BaseService):
         )
         await self.repository.delete(ticket)
         logger.info("Deleted maintenance ticket %s", ticket_id)
+        await self.audit_trail.record(
+            action=AuditAction.DELETE,
+            entity_id=ticket.id,
+            entity_name=f"Ticket {ticket.id}",
+            summary="Maintenance ticket deleted",
+            actor=actor,
+            description="Ticket removed from the system.",
+        )
 
     async def _validate_resource(self, resource_id: int) -> None:
         """Ensure the referenced resource exists."""

@@ -36,6 +36,7 @@ from .notification import (
 )
 from .project import ProjectCreate, ProjectRead, ProjectUpdate
 from .sensor_site import SensorSiteCreate, SensorSiteRead, SensorSiteUpdate
+from .audit_log import AuditLogCreate, AuditLogRead, AuditLogQuery
 
 __all__ = [
     "BaseSchema",
@@ -73,4 +74,7 @@ __all__ = [
     "SensorSiteCreate",
     "SensorSiteRead",
     "SensorSiteUpdate",
+    "AuditLogCreate",
+    "AuditLogRead",
+    "AuditLogQuery",
 ]

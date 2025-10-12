@@ -29,9 +29,14 @@ from fastapi import (
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..api.deps import get_pagination_params, get_session
+from ..api.deps import (
+    get_current_user,
+    get_pagination_params,
+    get_session,
+)
 from ..core.config import settings
 from ..models.document import DocumentType, DocumentStatus
+from ..models.user import User
 from ..schemas.base import PaginationQuery, PaginatedResponse
 from ..schemas.document import (
     DocumentRead,
@@ -49,7 +54,11 @@ from ..services.exceptions import (
     ValidationError,
 )
 
-router = APIRouter(prefix="/api/v1/documents", tags=["documents"])
+router = APIRouter(
+    prefix="/api/v1/documents",
+    tags=["documents"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def get_document_service(session: AsyncSession = Depends(get_session)) -> DocumentService:
@@ -127,6 +136,7 @@ async def upload_document(
         description="ID of associated sensor site"
     ),
     service: DocumentService = Depends(get_document_service),
+    current_user: User = Depends(get_current_user),
 ) -> DocumentUploadResponse:
     """
     Upload a new document.
@@ -178,7 +188,8 @@ async def upload_document(
             maintenance_ticket_id=maintenance_ticket_id,
             location_id=location_id,
             sensor_site_id=sensor_site_id,
-            uploaded_by_user_id=None,  # TODO: Get from authentication
+            uploaded_by_user_id=current_user.id if current_user else None,
+            actor=current_user,
         )
     except FileValidationError as e:
         raise HTTPException(
@@ -354,6 +365,7 @@ async def list_documents(
 async def get_document(
     document_id: int,
     service: DocumentService = Depends(get_document_service),
+    current_user: User = Depends(get_current_user),
 ) -> DocumentRead:
     """
     Get document by ID.
@@ -378,7 +390,7 @@ async def get_document(
     try:
         return await service.get_document(
             document_id=document_id,
-            user_id=None,  # TODO: Get from authentication
+            user_id=current_user.id if current_user else None,
         )
     except DocumentNotFoundError as e:
         raise HTTPException(
@@ -407,6 +419,7 @@ async def get_document(
 async def download_document(
     document_id: int,
     service: DocumentService = Depends(get_document_service),
+    current_user: User = Depends(get_current_user),
 ) -> StreamingResponse:
     """
     Download document file.
@@ -431,7 +444,7 @@ async def download_document(
     try:
         content, filename, mime_type = await service.download_document(
             document_id=document_id,
-            user_id=None,  # TODO: Get from authentication
+            user_id=current_user.id if current_user else None,
         )
         
         return StreamingResponse(
@@ -475,6 +488,7 @@ async def update_document(
     document_id: int,
     update_data: DocumentUpdate,
     service: DocumentService = Depends(get_document_service),
+    current_user: User = Depends(get_current_user),
 ) -> DocumentRead:
     """
     Update document metadata.
@@ -502,7 +516,8 @@ async def update_document(
         return await service.update_document(
             document_id=document_id,
             update_data=update_data,
-            user_id=None,  # TODO: Get from authentication
+            user_id=current_user.id if current_user else None,
+            actor=current_user,
         )
     except DocumentNotFoundError as e:
         raise HTTPException(
@@ -532,6 +547,7 @@ async def update_document(
 async def delete_document(
     document_id: int,
     service: DocumentService = Depends(get_document_service),
+    current_user: User = Depends(get_current_user),
 ) -> Response:
     """
     Delete document.
@@ -556,7 +572,8 @@ async def delete_document(
     try:
         success = await service.delete_document(
             document_id=document_id,
-            user_id=None,  # TODO: Get from authentication
+            user_id=current_user.id if current_user else None,
+            actor=current_user,
         )
         
         if not success:

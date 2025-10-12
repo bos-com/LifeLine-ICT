@@ -9,11 +9,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models import (
+    AuditAction,
+    AuditEntityType,
     ICTResource,
     Location,
     MaintenanceTicket,
     Project,
     TicketStatus,
+    User,
 )
 from ..repositories import ResourceRepository
 from ..schemas import (
@@ -24,6 +27,7 @@ from ..schemas import (
 )
 from .base import BaseService
 from .exceptions import ValidationError
+from .audit_trail import AuditTrailRecorder
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +38,7 @@ class ResourceService(BaseService):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
         self.repository = ResourceRepository(session)
+        self.audit_trail = AuditTrailRecorder(session, AuditEntityType.RESOURCE)
 
     async def list_resources(
         self,
@@ -66,21 +71,38 @@ class ResourceService(BaseService):
         )
         return ResourceRead.from_orm(resource)
 
-    async def create_resource(self, payload: ResourceCreate) -> ResourceRead:
+    async def create_resource(
+        self,
+        payload: ResourceCreate,
+        *,
+        actor: Optional[User] = None,
+    ) -> ResourceRead:
         """Create a new resource after validating foreign keys."""
 
         await self._validate_relationships(
             project_id=payload.project_id,
             location_id=payload.location_id,
         )
-        resource = await self.repository.create(payload.dict())
+        data = payload.dict()
+        resource = await self.repository.create(data)
         logger.info("Created resource %s", resource.name)
-        return ResourceRead.from_orm(resource)
+        result = ResourceRead.from_orm(resource)
+        await self.audit_trail.record(
+            action=AuditAction.CREATE,
+            entity_id=resource.id,
+            entity_name=resource.name,
+            summary="Resource created",
+            actor=actor,
+            context={"payload": data},
+        )
+        return result
 
     async def update_resource(
         self,
         resource_id: int,
         payload: ResourceUpdate,
+        *,
+        actor: Optional[User] = None,
     ) -> ResourceRead:
         """Update an existing resource."""
 
@@ -97,9 +119,23 @@ class ResourceService(BaseService):
 
         updated = await self.repository.update(resource, data)
         logger.info("Updated resource %s", resource_id)
-        return ResourceRead.from_orm(updated)
+        result = ResourceRead.from_orm(updated)
+        await self.audit_trail.record(
+            action=AuditAction.UPDATE,
+            entity_id=resource.id,
+            entity_name=resource.name,
+            summary="Resource updated",
+            actor=actor,
+            context={"changes": data},
+        )
+        return result
 
-    async def delete_resource(self, resource_id: int) -> None:
+    async def delete_resource(
+        self,
+        resource_id: int,
+        *,
+        actor: Optional[User] = None,
+    ) -> None:
         """Delete a resource when no active maintenance tickets exist."""
 
         resource: ICTResource = self.ensure_entity(
@@ -122,6 +158,14 @@ class ResourceService(BaseService):
 
         await self.repository.delete(resource)
         logger.info("Deleted resource %s", resource_id)
+        await self.audit_trail.record(
+            action=AuditAction.DELETE,
+            entity_id=resource.id,
+            entity_name=resource.name,
+            summary="Resource deleted",
+            actor=actor,
+            description="Resource removed after maintenance ticket checks.",
+        )
 
     async def _validate_relationships(
         self,

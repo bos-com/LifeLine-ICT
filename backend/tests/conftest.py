@@ -17,10 +17,27 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.ext.compiler import compiles
 
 from ..app import create_app
-from ..app.api.deps import get_db_session
-from ..app.core.database import Base
+from ..app.api.deps import get_db_session, get_current_user
+from ..app.core.database import Base, get_session
+from ..app.models.user import User
+from geoalchemy2.admin.dialects import sqlite as spatialite_admin
+from geoalchemy2 import Geometry
+
+
+spatialite_admin.before_create = lambda *args, **kwargs: None
+spatialite_admin.after_create = lambda *args, **kwargs: None
+spatialite_admin.before_drop = lambda *args, **kwargs: None
+spatialite_admin.after_drop = lambda *args, **kwargs: None
+
+
+@compiles(Geometry, "sqlite")  # type: ignore[misc]
+def _compile_geometry_sqlite(type_, compiler, **kwargs):  # pragma: no cover
+    """Compile geometry columns as simple BLOBs for SQLite test engines."""
+
+    return "BLOB"
 
 
 @pytest.fixture(scope="session")
@@ -64,7 +81,16 @@ async def app(session: AsyncSession) -> AsyncIterator[FastAPI]:
     async def get_test_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
+    user = User(username="test-user", hashed_password="fake-hash")
+    session.add(user)
+    await session.flush()
+
+    async def get_test_user() -> User:
+        return user
+
     app.dependency_overrides[get_db_session] = get_test_session
+    app.dependency_overrides[get_session] = get_test_session
+    app.dependency_overrides[get_current_user] = get_test_user
     yield app
     app.dependency_overrides.clear()
 

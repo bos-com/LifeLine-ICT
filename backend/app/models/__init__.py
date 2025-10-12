@@ -7,7 +7,15 @@ mixins live alongside the models so they can be imported consistently across
 repositories, services, and schema definitions.
 """
 
-from .enums import LifecycleState, ProjectStatus, TicketSeverity, TicketStatus
+from .enums import (
+    LifecycleState,
+    ProjectStatus,
+    TicketSeverity,
+    TicketStatus,
+    AuditAction,
+    AuditActorType,
+    AuditEntityType,
+)
 from .location import Location
 from .maintenance_ticket import MaintenanceTicket
 from .notification import Notification, NotificationType, NotificationStatus, NotificationPriority
@@ -16,6 +24,7 @@ from .sensor_site import SensorSite
 from .timestamp_mixin import TimestampMixin
 from .ict_resource import ICTResource
 from .document import Document, DocumentType, DocumentStatus
+from .audit_log import AuditLog
 from .user import User
 
 __all__ = [
@@ -37,4 +46,8 @@ __all__ = [
     "DocumentType",
     "DocumentStatus",
     "User",
+    "AuditAction",
+    "AuditActorType",
+    "AuditEntityType",
+    "AuditLog",
 ]

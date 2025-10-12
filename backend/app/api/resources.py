@@ -71,12 +71,13 @@ async def get_resource(
 async def create_resource(
     payload: ResourceCreate,
     service: ResourceService = Depends(get_resource_service),
+    current_user: User = Depends(get_current_user),
 ) -> ResourceRead:
     """
     Create a new ICT resource.
     """
 
-    return await service.create_resource(payload)
+    return await service.create_resource(payload, actor=current_user)
 
 
 @router.put(
@@ -88,6 +89,7 @@ async def update_resource(
     resource_id: int,
     payload: ResourceCreate,
     service: ResourceService = Depends(get_resource_service),
+    current_user: User = Depends(get_current_user),
 ) -> ResourceRead:
     """
     Replace an existing ICT resource.
@@ -96,6 +98,7 @@ async def update_resource(
     return await service.update_resource(
         resource_id,
         ResourceUpdate(**payload.dict()),
+        actor=current_user,
     )
 
 
@@ -108,12 +111,17 @@ async def partial_update_resource(
     resource_id: int,
     payload: ResourceUpdate,
     service: ResourceService = Depends(get_resource_service),
+    current_user: User = Depends(get_current_user),
 ) -> ResourceRead:
     """
     Apply a partial update to an existing ICT resource.
     """
 
-    return await service.update_resource(resource_id, payload)
+    return await service.update_resource(
+        resource_id,
+        payload,
+        actor=current_user,
+    )
 
 
 @router.delete(
@@ -124,10 +132,11 @@ async def partial_update_resource(
 async def delete_resource(
     resource_id: int,
     service: ResourceService = Depends(get_resource_service),
+    current_user: User = Depends(get_current_user),
 ) -> Response:
     """
     Delete a resource once unresolved tickets have been cleared.
     """
 
-    await service.delete_resource(resource_id)
+    await service.delete_resource(resource_id, actor=current_user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

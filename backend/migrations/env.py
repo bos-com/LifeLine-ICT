@@ -25,6 +25,7 @@ if config.config_file_name is not None:
 from app.core.database import Base
 from app.models.alert import Alert
 from app.models.document import Document
+from app.models.audit_log import AuditLog
 from app.models.ict_resource import ICTResource
 from app.models.location import Location
 from app.models.maintenance_ticket import MaintenanceTicket

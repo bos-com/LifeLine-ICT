@@ -21,6 +21,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core.config import settings
 from ..models import (
+    AuditAction,
+    AuditEntityType,
     Document,
     DocumentStatus,
     DocumentType,
@@ -29,6 +31,7 @@ from ..models import (
     MaintenanceTicket,
     Project,
     SensorSite,
+    User,
 )
 from ..repositories.document_repository import DocumentRepository
 from ..schemas.base import PaginatedResponse, PaginationQuery
@@ -49,6 +52,7 @@ from .exceptions import (
     StorageError,
     ValidationError,
 )
+from .audit_trail import AuditTrailRecorder
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +85,7 @@ class DocumentService(BaseService):
         super().__init__(session)
         self.repository = DocumentRepository(session)
         self.storage_service = FileStorageService()
+        self.audit_trail = AuditTrailRecorder(session, AuditEntityType.DOCUMENT)
     
     async def upload_document(
         self,
@@ -95,6 +100,7 @@ class DocumentService(BaseService):
         location_id: Optional[int] = None,
         sensor_site_id: Optional[int] = None,
         uploaded_by_user_id: Optional[int] = None,
+        actor: Optional[User] = None,
     ) -> DocumentUploadResponse:
         """
         Upload and process a new document.
@@ -166,6 +172,8 @@ class DocumentService(BaseService):
                 sensor_site_id=sensor_site_id,
             )
             
+            uploader_id = uploaded_by_user_id or (actor.id if actor else None)
+
             # Create document record
             document = await self.repository.create_document(
                 filename=filename,
@@ -184,7 +192,7 @@ class DocumentService(BaseService):
                 maintenance_ticket_id=maintenance_ticket_id,
                 location_id=location_id,
                 sensor_site_id=sensor_site_id,
-                uploaded_by_user_id=uploaded_by_user_id,
+                uploaded_by_user_id=uploader_id,
             )
             
             # Save file to storage
@@ -193,6 +201,24 @@ class DocumentService(BaseService):
             # Update status to available
             document.status = DocumentStatus.AVAILABLE
             await self.repository.session.commit()
+
+            await self.audit_trail.record(
+                action=AuditAction.ATTACHMENT,
+                entity_id=document.id,
+                entity_name=document.filename,
+                summary="Document uploaded",
+                actor=actor,
+                context={
+                    "document_type": document_type.value,
+                    "is_public": is_public,
+                    "project_id": project_id,
+                    "resource_id": resource_id,
+                    "maintenance_ticket_id": maintenance_ticket_id,
+                    "location_id": location_id,
+                    "sensor_site_id": sensor_site_id,
+                    "uploaded_by_user_id": uploader_id,
+                },
+            )
             
             logger.info(f"Successfully uploaded document: {document.id}")
             
@@ -300,6 +326,15 @@ class DocumentService(BaseService):
         
         # Get file content
         content = self.storage_service.get_file_content(document)
+
+        await self.audit_trail.record(
+            action=AuditAction.ACCESS,
+            entity_id=document.id,
+            entity_name=document.filename,
+            summary="Document downloaded",
+            actor=None,
+            context={"requested_by_user_id": user_id},
+        )
         
         return content, document.filename, document.mime_type
     
@@ -345,7 +380,8 @@ class DocumentService(BaseService):
         self,
         document_id: int,
         update_data: DocumentUpdate,
-        user_id: Optional[int] = None
+        user_id: Optional[int] = None,
+        actor: Optional[User] = None,
     ) -> DocumentRead:
         """
         Update document metadata.
@@ -404,13 +440,23 @@ class DocumentService(BaseService):
         
         await self.repository.session.commit()
         await self.repository.session.refresh(document)
+
+        await self.audit_trail.record(
+            action=AuditAction.UPDATE,
+            entity_id=document.id,
+            entity_name=document.filename,
+            summary="Document metadata updated",
+            actor=actor,
+            context={"changes": update_dict},
+        )
         
         return self._document_to_read_schema(document)
     
     async def delete_document(
         self,
         document_id: int,
-        user_id: Optional[int] = None
+        user_id: Optional[int] = None,
+        actor: Optional[User] = None,
     ) -> bool:
         """
         Delete document and associated file.
@@ -455,6 +501,17 @@ class DocumentService(BaseService):
             await self.repository.session.commit()
             
             logger.info(f"Successfully deleted document: {document_id}")
+            await self.audit_trail.record(
+                action=AuditAction.DELETE,
+                entity_id=document.id,
+                entity_name=document.filename,
+                summary="Document deleted",
+                actor=actor,
+                context={
+                    "file_path": document.file_path,
+                    "mime_type": document.mime_type,
+                },
+            )
             return True
             
         except Exception as e:

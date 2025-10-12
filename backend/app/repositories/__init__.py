@@ -13,6 +13,7 @@ from .notification_repository import NotificationRepository
 from .project_repository import ProjectRepository
 from .resource_repository import ResourceRepository
 from .sensor_site_repository import SensorSiteRepository
+from .audit_log_repository import AuditLogRepository
 
 __all__ = [
     "AsyncRepository",
@@ -23,4 +24,5 @@ __all__ = [
     "ProjectRepository",
     "ResourceRepository",
     "SensorSiteRepository",
+    "AuditLogRepository",
 ]

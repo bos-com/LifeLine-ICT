@@ -5,6 +5,8 @@ This test suite covers all API endpoints for document management including
 upload, download, search, and CRUD operations.
 """
 
+from types import SimpleNamespace
+
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from fastapi import status
@@ -12,6 +14,7 @@ from fastapi.testclient import TestClient
 from io import BytesIO
 
 from app.main import create_app
+from app.api.deps import get_current_user
 from app.models.document import Document, DocumentStatus, DocumentType
 from app.schemas.document import DocumentUploadResponse, DocumentRead, DocumentSummary
 from app.services.exceptions import (
@@ -29,7 +32,13 @@ class TestDocumentRouter:
     def client(self):
         """FastAPI test client."""
         app = create_app()
-        return TestClient(app)
+        app.dependency_overrides[get_current_user] = lambda: SimpleNamespace(
+            id=1,
+            username="test-user",
+        )
+        with TestClient(app) as client:
+            yield client
+        app.dependency_overrides.clear()
 
     @pytest.fixture
     def sample_file_content(self):

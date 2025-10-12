@@ -71,12 +71,13 @@ async def get_project(
 async def create_project(
     payload: ProjectCreate,
     service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_current_user),
 ) -> ProjectRead:
     """
     Create a new project record.
     """
 
-    return await service.create_project(payload)
+    return await service.create_project(payload, actor=current_user)
 
 
 @router.put(
@@ -88,12 +89,17 @@ async def update_project(
     project_id: int,
     payload: ProjectCreate,
     service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_current_user),
 ) -> ProjectRead:
     """
     Replace an existing project using a full payload.
     """
 
-    return await service.update_project(project_id, ProjectUpdate(**payload.dict()))
+    return await service.update_project(
+        project_id,
+        ProjectUpdate(**payload.dict()),
+        actor=current_user,
+    )
 
 
 @router.patch(
@@ -105,12 +111,17 @@ async def partial_update_project(
     project_id: int,
     payload: ProjectUpdate,
     service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_current_user),
 ) -> ProjectRead:
     """
     Apply a partial update to an existing project.
     """
 
-    return await service.update_project(project_id, payload)
+    return await service.update_project(
+        project_id,
+        payload,
+        actor=current_user,
+    )
 
 
 @router.delete(
@@ -121,10 +132,11 @@ async def partial_update_project(
 async def delete_project(
     project_id: int,
     service: ProjectService = Depends(get_project_service),
+    current_user: User = Depends(get_current_user),
 ) -> Response:
     """
     Delete a project once dependencies have been cleared.
     """
 
-    await service.delete_project(project_id)
+    await service.delete_project(project_id, actor=current_user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -39,7 +39,7 @@ class Location(TimestampMixin, Base):
         doc="Room or rack identifier within the building.",
     )
     geom: Mapped[Optional[Geometry]] = mapped_column(
-        Geometry(geometry_type='POINT', srid=4326),
+        Geometry(geometry_type="POINT", srid=4326),
         nullable=True,
         doc="Geographic coordinates (Point) for GIS overlays.",
     )

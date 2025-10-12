@@ -23,6 +23,8 @@ from .maintenance_tickets import MaintenanceTicketService
 from .projects import ProjectService
 from .resources import ResourceService
 from .sensor_sites import SensorSiteService
+from .audit_log_service import AuditLogService
+from .audit_trail import AuditTrailRecorder
 
 __all__ = [
     "BaseService",
@@ -41,4 +43,6 @@ __all__ = [
     "ServiceError",
     "StorageError",
     "ValidationError",
+    "AuditLogService",
+    "AuditTrailRecorder",
 ]

@@ -43,3 +43,37 @@ This plan outlines the steps to implement the real-time alert engine for the Lif
 
 - Create a new file `.github/workflows/ci.yml`.
 - This pipeline will automate the testing of the application on every push to the repository.
+
+# Plan for Implementing Audit Log / Activity Tracking (Issue #6)
+
+**Status: Implemented**
+
+## 1. Establish Audit Logging Foundations
+
+- Define the `AuditLog` ORM model with action/entity enumerations and structured metadata (actor, context, source).
+- Create matching Pydantic schemas to validate API requests and shape responses.
+- Produce an Alembic migration to create the `audit_logs` table with efficient indexes.
+
+## 2. Build Repository & Service Layer
+
+- Implement `AuditLogRepository` to persist entries and support filtered queries (action, entity, actor, date).
+- Introduce an `AuditLogService` with helper methods to record events and bundle pagination logic.
+- Add integration hooks to core services (projects, resources, maintenance tickets, documents) to capture key lifecycle actions.
+
+## 3. Expose Audit Log API Endpoints
+
+- Create a FastAPI router under `/api/v1/audit-logs` with endpoints to list and inspect audit history.
+- Support pagination, filtering, and keyword search to help compliance reviews.
+- Ensure responses include contextual metadata for downstream dashboards.
+
+## 4. Testing Strategy
+
+- Add targeted unit tests for the repository/service to verify filtering, persistence, and validation rules.
+- Expand API tests to cover listing, filtering, and empty-state responses.
+- Provide fixtures/mocks to simulate service hooks without relying on external dependencies.
+
+## 5. Documentation & Developer Experience
+
+- Document usage patterns in a dedicated `AUDIT_LOGGING.md` guide outlining data model and integration hooks.
+- Update inline docstrings across new modules to maintain the project's documentation standard.
+- Prepare `PR_AUDIT_LOG.md` summarising implementation details for maintainers.

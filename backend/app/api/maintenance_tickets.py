@@ -71,12 +71,13 @@ async def get_ticket(
 async def create_ticket(
     payload: TicketCreate,
     service: MaintenanceTicketService = Depends(get_ticket_service),
+    current_user: User = Depends(get_current_user),
 ) -> TicketRead:
     """
     Create a new maintenance ticket.
     """
 
-    return await service.create_ticket(payload)
+    return await service.create_ticket(payload, actor=current_user)
 
 
 @router.put(
@@ -88,6 +89,7 @@ async def update_ticket(
     ticket_id: int,
     payload: TicketCreate,
     service: MaintenanceTicketService = Depends(get_ticket_service),
+    current_user: User = Depends(get_current_user),
 ) -> TicketRead:
     """
     Replace an existing maintenance ticket.
@@ -96,6 +98,7 @@ async def update_ticket(
     return await service.update_ticket(
         ticket_id,
         TicketUpdate(**payload.dict()),
+        actor=current_user,
     )
 
 
@@ -108,12 +111,17 @@ async def partial_update_ticket(
     ticket_id: int,
     payload: TicketUpdate,
     service: MaintenanceTicketService = Depends(get_ticket_service),
+    current_user: User = Depends(get_current_user),
 ) -> TicketRead:
     """
     Apply a partial update to an existing maintenance ticket.
     """
 
-    return await service.update_ticket(ticket_id, payload)
+    return await service.update_ticket(
+        ticket_id,
+        payload,
+        actor=current_user,
+    )
 
 
 @router.delete(
@@ -124,10 +132,11 @@ async def partial_update_ticket(
 async def delete_ticket(
     ticket_id: int,
     service: MaintenanceTicketService = Depends(get_ticket_service),
+    current_user: User = Depends(get_current_user),
 ) -> Response:
     """
     Delete a maintenance ticket.
     """
 
-    await service.delete_ticket(ticket_id)
+    await service.delete_ticket(ticket_id, actor=current_user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
