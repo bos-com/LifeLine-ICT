@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from sqlalchemy import DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -70,6 +70,12 @@ class MaintenanceTicket(TimestampMixin, Base):
     resource: Mapped["ICTResource"] = relationship(
         "ICTResource",
         back_populates="maintenance_tickets",
+    )
+    documents: Mapped[List["Document"]] = relationship(
+        "Document",
+        back_populates="maintenance_ticket",
+        cascade="all, delete-orphan",
+        doc="Documents associated with this maintenance ticket.",
     )
 
     def __repr__(self) -> str:  # pragma: no cover - repr aids debugging

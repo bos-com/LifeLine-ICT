@@ -84,6 +84,28 @@ class Settings:
     twilio_account_sid: str = os.getenv("TWILIO_ACCOUNT_SID", "")
     twilio_auth_token: str = os.getenv("TWILIO_AUTH_TOKEN", "")
     twilio_from_number: str = os.getenv("TWILIO_FROM_NUMBER", "")
+    
+    # File Upload Configuration
+    upload_storage_path: str = os.getenv(
+        "LIFELINE_UPLOAD_STORAGE_PATH",
+        "./uploads"
+    )
+    upload_max_size: int = _int_from_env(
+        "LIFELINE_UPLOAD_MAX_SIZE",
+        10 * 1024 * 1024  # 10MB default
+    )
+    upload_allowed_extensions: str = os.getenv(
+        "LIFELINE_UPLOAD_ALLOWED_EXTENSIONS",
+        "pdf,doc,docx,txt,jpg,jpeg,png,gif,bmp,tiff,png,zip,rar,7z"
+    )
+    upload_quarantine_path: str = os.getenv(
+        "LIFELINE_UPLOAD_QUARANTINE_PATH",
+        "./quarantine"
+    )
+    upload_cleanup_interval_hours: int = _int_from_env(
+        "LIFELINE_UPLOAD_CLEANUP_INTERVAL_HOURS",
+        24
+    )
 
 
 settings = Settings()

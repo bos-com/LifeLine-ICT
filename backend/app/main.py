@@ -12,6 +12,7 @@ from .core.config import settings
 from .core.logging import configure_logging
 from .api import (
     errors,
+    document_router,
     locations_router,
     maintenance_tickets_router,
     notification_router,
@@ -66,6 +67,7 @@ def create_app() -> FastAPI:
     app.include_router(analytics_router)
     app.include_router(alert_router)
     app.include_router(auth_router)
+    app.include_router(document_router)
 
     @app.get("/health", tags=["health"])
     async def healthcheck() -> dict[str, str]:

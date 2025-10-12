@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..core.database import get_session
+from ..core.database import get_session, session_scope
 from ..models.user import User
 from ..repositories.user_repository import UserRepository
 from ..services.auth_service import SECRET_KEY, ALGORITHM
@@ -63,6 +65,17 @@ def get_location_service(
     session: AsyncSession = Depends(get_session),
 ) -> LocationService:
     return LocationService(session)
+
+
+async def get_db_session() -> AsyncIterator[AsyncSession]:
+    """
+    Backwards-compatible dependency that yields a database session.
+    
+    Tests and older routers still import ``get_db_session``; to avoid breaking
+    them we forward to the shared session scope used by ``get_session``.
+    """
+    async with session_scope() as session:
+        yield session
 
 
 async def get_current_user(

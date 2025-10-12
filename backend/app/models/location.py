@@ -52,6 +52,12 @@ class Location(TimestampMixin, Base):
         "SensorSite",
         back_populates="location",
     )
+    documents: Mapped[List["Document"]] = relationship(
+        "Document",
+        back_populates="location",
+        cascade="all, delete-orphan",
+        doc="Documents associated with this location.",
+    )
 
     def __repr__(self) -> str:  # pragma: no cover - repr aids debugging
         """Representation for logging and debugging."""

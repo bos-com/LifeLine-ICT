@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -60,6 +60,12 @@ class SensorSite(TimestampMixin, Base):
     location: Mapped[Optional["Location"]] = relationship(
         "Location",
         back_populates="sensor_sites",
+    )
+    documents: Mapped[List["Document"]] = relationship(
+        "Document",
+        back_populates="sensor_site",
+        cascade="all, delete-orphan",
+        doc="Documents associated with this sensor site.",
     )
 
     def __repr__(self) -> str:  # pragma: no cover - repr aids debugging

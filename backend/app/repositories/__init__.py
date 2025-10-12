@@ -6,6 +6,7 @@ service layer focused on higher-order business rules.
 """
 
 from .base import AsyncRepository
+from .document_repository import DocumentRepository
 from .location_repository import LocationRepository
 from .maintenance_ticket_repository import MaintenanceTicketRepository
 from .notification_repository import NotificationRepository
@@ -15,6 +16,7 @@ from .sensor_site_repository import SensorSiteRepository
 
 __all__ = [
     "AsyncRepository",
+    "DocumentRepository",
     "LocationRepository",
     "MaintenanceTicketRepository",
     "NotificationRepository",

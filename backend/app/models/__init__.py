@@ -15,6 +15,8 @@ from .project import Project
 from .sensor_site import SensorSite
 from .timestamp_mixin import TimestampMixin
 from .ict_resource import ICTResource
+from .document import Document, DocumentType, DocumentStatus
+from .user import User
 
 __all__ = [
     "LifecycleState",
@@ -31,4 +33,8 @@ __all__ = [
     "TicketSeverity",
     "TicketStatus",
     "TimestampMixin",
+    "Document",
+    "DocumentType",
+    "DocumentStatus",
+    "User",
 ]

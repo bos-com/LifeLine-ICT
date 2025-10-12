@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import Field, model_validator
+from pydantic import Field, validator
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
 
@@ -77,10 +77,9 @@ class LocationRead(LocationBase):
 
     id: int = Field(..., description="Unique identifier.")
 
-    @model_validator(mode="before")
-    @classmethod
-    def translate_geom(cls, data):
-        if isinstance(data, dict) and "geom" in data and isinstance(data["geom"], WKBElement):
-            shape = to_shape(data["geom"])
-            data["geom"] = {"lat": shape.y, "lon": shape.x}
-        return data
+    @validator("geom", pre=True)
+    def translate_geom(cls, v):
+        if isinstance(v, WKBElement):
+            shape = to_shape(v)
+            return {"lat": shape.y, "lon": shape.x}
+        return v

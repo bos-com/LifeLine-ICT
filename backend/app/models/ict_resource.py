@@ -85,6 +85,12 @@ class ICTResource(TimestampMixin, Base):
         back_populates="resource",
         cascade="all, delete-orphan",
     )
+    documents: Mapped[List["Document"]] = relationship(
+        "Document",
+        back_populates="resource",
+        cascade="all, delete-orphan",
+        doc="Documents associated with this ICT resource.",
+    )
 
     def __repr__(self) -> str:  # pragma: no cover - repr aids debugging
         """Representation for logging and debugging."""

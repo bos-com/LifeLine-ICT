@@ -11,6 +11,17 @@ from .base import (
     PaginationMeta,
     PaginationQuery,
 )
+from .document import (
+    DocumentBase,
+    DocumentCreate,
+    DocumentUpdate,
+    DocumentRead,
+    DocumentSummary,
+    DocumentUploadResponse,
+    DocumentDownloadResponse,
+    DocumentSearchQuery,
+    DocumentStats,
+)
 from .ict_resource import ResourceCreate, ResourceRead, ResourceUpdate
 from .location import LocationCreate, LocationRead, LocationUpdate
 from .maintenance_ticket import TicketCreate, TicketRead, TicketUpdate
@@ -31,6 +42,15 @@ __all__ = [
     "PaginatedResponse",
     "PaginationMeta",
     "PaginationQuery",
+    "DocumentBase",
+    "DocumentCreate",
+    "DocumentUpdate",
+    "DocumentRead",
+    "DocumentSummary",
+    "DocumentUploadResponse",
+    "DocumentDownloadResponse",
+    "DocumentSearchQuery",
+    "DocumentStats",
     "ResourceCreate",
     "ResourceRead",
     "ResourceUpdate",

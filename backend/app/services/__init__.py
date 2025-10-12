@@ -6,7 +6,18 @@ technicians while delegating persistence to repositories.
 """
 
 from .base import BaseService
-from .exceptions import NotFoundError, ServiceError, ValidationError
+from .document_service import DocumentService
+from .exceptions import (
+    DocumentNotFoundError,
+    FileNotFoundError,
+    FileValidationError,
+    NotFoundError,
+    QuarantineError,
+    ServiceError,
+    StorageError,
+    ValidationError,
+)
+from .file_storage import FileStorageService
 from .locations import LocationService
 from .maintenance_tickets import MaintenanceTicketService
 from .projects import ProjectService
@@ -15,12 +26,19 @@ from .sensor_sites import SensorSiteService
 
 __all__ = [
     "BaseService",
-    "NotFoundError",
-    "ServiceError",
-    "ValidationError",
+    "DocumentService",
+    "DocumentNotFoundError",
+    "FileNotFoundError",
+    "FileStorageService",
+    "FileValidationError",
     "LocationService",
     "MaintenanceTicketService",
+    "NotFoundError",
     "ProjectService",
+    "QuarantineError",
     "ResourceService",
     "SensorSiteService",
+    "ServiceError",
+    "StorageError",
+    "ValidationError",
 ]

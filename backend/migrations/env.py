@@ -24,6 +24,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 from app.core.database import Base
 from app.models.alert import Alert
+from app.models.document import Document
 from app.models.ict_resource import ICTResource
 from app.models.location import Location
 from app.models.maintenance_ticket import MaintenanceTicket
@@ -71,6 +72,12 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+    
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata

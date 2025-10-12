@@ -71,6 +71,12 @@ class Project(TimestampMixin, Base):
         back_populates="project",
         cascade="all, delete-orphan",
     )
+    documents: Mapped[List["Document"]] = relationship(
+        "Document",
+        back_populates="project",
+        cascade="all, delete-orphan",
+        doc="Documents associated with this project.",
+    )
 
     __table_args__ = (
         CheckConstraint(
