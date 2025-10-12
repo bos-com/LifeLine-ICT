@@ -14,6 +14,15 @@ from .base import (
 from .ict_resource import ResourceCreate, ResourceRead, ResourceUpdate
 from .location import LocationCreate, LocationRead, LocationUpdate
 from .maintenance_ticket import TicketCreate, TicketRead, TicketUpdate
+from .notification import (
+    NotificationBase,
+    NotificationCreate,
+    NotificationRead,
+    NotificationUpdate,
+    NotificationTemplate,
+    NotificationRequest,
+    NotificationStats,
+)
 from .project import ProjectCreate, ProjectRead, ProjectUpdate
 from .sensor_site import SensorSiteCreate, SensorSiteRead, SensorSiteUpdate
 
@@ -31,6 +40,13 @@ __all__ = [
     "TicketCreate",
     "TicketRead",
     "TicketUpdate",
+    "NotificationBase",
+    "NotificationCreate",
+    "NotificationRead",
+    "NotificationUpdate",
+    "NotificationTemplate",
+    "NotificationRequest",
+    "NotificationStats",
     "ProjectCreate",
     "ProjectRead",
     "ProjectUpdate",

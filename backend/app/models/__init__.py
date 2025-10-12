@@ -10,6 +10,7 @@ repositories, services, and schema definitions.
 from .enums import LifecycleState, ProjectStatus, TicketSeverity, TicketStatus
 from .location import Location
 from .maintenance_ticket import MaintenanceTicket
+from .notification import Notification, NotificationType, NotificationStatus, NotificationPriority
 from .project import Project
 from .sensor_site import SensorSite
 from .timestamp_mixin import TimestampMixin
@@ -22,6 +23,10 @@ __all__ = [
     "ICTResource",
     "Location",
     "MaintenanceTicket",
+    "Notification",
+    "NotificationType",
+    "NotificationStatus",
+    "NotificationPriority",
     "SensorSite",
     "TicketSeverity",
     "TicketStatus",

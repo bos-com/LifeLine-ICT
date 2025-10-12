@@ -27,6 +27,7 @@ from app.models.alert import Alert
 from app.models.ict_resource import ICTResource
 from app.models.location import Location
 from app.models.maintenance_ticket import MaintenanceTicket
+from app.models.notification import Notification
 from app.models.project import Project
 from app.models.sensor_site import SensorSite
 from app.models.user import User
@@ -70,13 +71,13 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-        with connectable.connect() as connection:
-            context.configure(
-                connection=connection, target_metadata=target_metadata
-            )
-    
-            with context.begin_transaction():
-                context.run_migrations()
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection, target_metadata=target_metadata
+        )
+
+        with context.begin_transaction():
+            context.run_migrations()
 
 if context.is_offline_mode():
     run_migrations_offline()

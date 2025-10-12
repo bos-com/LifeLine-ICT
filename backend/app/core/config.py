@@ -70,6 +70,20 @@ class Settings:
         "LIFELINE_PAGINATION_MAX_LIMIT",
         100,
     )
+    
+    # Email/SMTP Configuration
+    smtp_host: str = os.getenv("LIFELINE_SMTP_HOST", "localhost")
+    smtp_port: int = _int_from_env("LIFELINE_SMTP_PORT", 587)
+    smtp_username: str = os.getenv("LIFELINE_SMTP_USERNAME", "")
+    smtp_password: str = os.getenv("LIFELINE_SMTP_PASSWORD", "")
+    smtp_use_tls: bool = os.getenv("LIFELINE_SMTP_USE_TLS", "true").lower() == "true"
+    from_email: str = os.getenv("LIFELINE_FROM_EMAIL", "")
+    from_name: str = os.getenv("LIFELINE_FROM_NAME", "LifeLine-ICT")
+    
+    # SMS/Twilio Configuration
+    twilio_account_sid: str = os.getenv("TWILIO_ACCOUNT_SID", "")
+    twilio_auth_token: str = os.getenv("TWILIO_AUTH_TOKEN", "")
+    twilio_from_number: str = os.getenv("TWILIO_FROM_NUMBER", "")
 
 
 settings = Settings()

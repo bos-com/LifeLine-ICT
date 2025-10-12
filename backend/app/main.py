@@ -14,6 +14,7 @@ from .api import (
     errors,
     locations_router,
     maintenance_tickets_router,
+    notification_router,
     projects_router,
     resources_router,
     sensor_sites_router,
@@ -60,6 +61,7 @@ def create_app() -> FastAPI:
     app.include_router(resources_router)
     app.include_router(locations_router)
     app.include_router(maintenance_tickets_router)
+    app.include_router(notification_router)
     app.include_router(sensor_sites_router)
     app.include_router(analytics_router)
     app.include_router(alert_router)
