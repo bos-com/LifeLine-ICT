@@ -2,7 +2,7 @@
 
 ## 📌 Issue Reference
 
-- Addresses **Issue #6 – Audit Log / Activity Tracking**
+- Closes **#6 – Audit Log / Activity Tracking**
 
 ## 🧭 What’s Included
 
