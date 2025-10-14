@@ -1,0 +1,12 @@
+# PlatformIO build system
+.pio/
+.vscode/
+.venv/
+__pycache__/
+*.pyc
+*.o
+*.elf
+*.bin
+
+# Secrets
+include/secrets.h

@@ -1,0 +1,14 @@
+# PlatformIO build files
+.pio/
+*.bin
+*.elf
+*.o
+
+# IDE & venv
+.vscode/
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets & local config
+iot/firmware/esp32/include/secrets.h
