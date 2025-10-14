@@ -1,0 +1,28 @@
+"""
+Repository abstractions encapsulating database CRUD operations.
+
+Each repository exposes async helpers tailored to a domain entity, keeping the
+service layer focused on higher-order business rules.
+"""
+
+from .base import AsyncRepository
+from .document_repository import DocumentRepository
+from .location_repository import LocationRepository
+from .maintenance_ticket_repository import MaintenanceTicketRepository
+from .notification_repository import NotificationRepository
+from .project_repository import ProjectRepository
+from .resource_repository import ResourceRepository
+from .sensor_site_repository import SensorSiteRepository
+from .audit_log_repository import AuditLogRepository
+
+__all__ = [
+    "AsyncRepository",
+    "DocumentRepository",
+    "LocationRepository",
+    "MaintenanceTicketRepository",
+    "NotificationRepository",
+    "ProjectRepository",
+    "ResourceRepository",
+    "SensorSiteRepository",
+    "AuditLogRepository",
+]
