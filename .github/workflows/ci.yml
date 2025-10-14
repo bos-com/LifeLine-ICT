@@ -1,31 +1,47 @@
-
 name: CI
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
+    name: Run Backend Tests
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
+      # Step 2: Set up Python 3.11
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: "3.11"
 
+      # Step 3: Upgrade pip and install dependencies cleanly
       - name: Install dependencies
         run: |
           python -m venv .venv
           source .venv/bin/activate
-          pip install -r backend/requirements.txt
+          python -m pip install --upgrade pip wheel setuptools
+          pip install --no-cache-dir -r backend/requirements.txt
 
+      # Step 4: Run tests with pytest
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest backend/tests
+          pytest backend/tests -v --disable-warnings
+
+      # Step 5: (Optional) Upload test results (useful for debugging failures)
+      - name: Upload pytest logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-logs
+          path: .pytest_cache/
