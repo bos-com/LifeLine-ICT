@@ -122,7 +122,7 @@ institutional context.
 
 ## License
 
-Pending institutional review.
+MIT, Apache
 
 ## Maintainers
 
