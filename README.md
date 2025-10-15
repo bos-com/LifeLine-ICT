@@ -126,4 +126,4 @@ Pending institutional review.
 
 ## Maintainers
 
-- ICT Directorate, Uganda University – `ict-support@lifeline.example.edu`
+Muwanga Erasto Kosea, Ouma Ronald
