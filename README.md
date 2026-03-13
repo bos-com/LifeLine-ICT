@@ -127,3 +127,5 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+## System Requirements
+Ensure you have Node.js and Git installed before running this project.
