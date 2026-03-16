@@ -1,3 +1,11 @@
+## Installation Guide
+
+1. Clone the repository
+2. Install the required dependencies
+3. Run the application
+
+This section helps new contributors quickly set up the project environment.
+
 # LifeLine-ICT
 
 ## Project Summary
