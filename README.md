@@ -1,3 +1,9 @@
+## Setup Guide
+
+1. Clone the repository
+2. Install required dependencies
+3. Run the project
+
 # LifeLine-ICT
 
 ## Project Summary
