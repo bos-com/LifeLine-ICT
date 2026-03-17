@@ -1,5 +1,7 @@
 # LifeLine-ICT
 
+![CI](https://github.com/buayism/LifeLine-ICT/actions/workflows/ci.yml/badge.svg)
+
 ## Project Summary
 
 LifeLine-ICT is a digital infrastructure management platform that supports the
