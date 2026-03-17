@@ -9,7 +9,35 @@ digital services reliable for students and researchers. The repository contains
 code for the IoT device layer, the backend APIs, and supporting documentation so
 faculties can adapt the platform to their own campuses.
 
-### High-Level Architecture
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.11+
+- `pip` or `uv` for dependency management
+- PostgreSQL (for production)
+- Docker & Docker Compose (recommended)
+
+### Running with Docker
+
+```bash
+# Clone the repository
+git clone https://github.com/bos-com/LifeLine-ICT.git
+cd LifeLine-ICT
+
+# Start the backend service
+docker-compose up -d
+
+# Access the API
+# API: http://localhost:8000
+# Swagger Docs: http://localhost:8000/docs
+```
+
+---
+
+## 🏗️ Architecture
 
 The solution comprises five collaborating layers:
 
@@ -23,9 +51,6 @@ The solution comprises five collaborating layers:
 - **Deployment** – Infrastructure-as-code scripts will package the stack for on
   campus or cloud hosting.
 
-Consult `docs/backend_crud_plan.md` for the architectural rationale that guided
-issue `#5` (CRUD API implementation).
-
 ### Module Overview
 
 - `iot/` – Firmware sketches and logging scripts for field sensors.
@@ -34,7 +59,9 @@ issue `#5` (CRUD API implementation).
 - Additional directories (frontend, gis, deployment) will be filled as the
   broader initiative matures.
 
-## Backend Service (Issue #5 Deliverable)
+---
+
+## 🛠️ Backend Service Setup
 
 ### Prerequisites
 
@@ -111,19 +138,34 @@ The backend models capture the following relationships:
 Consult the service-layer docstrings for detailed business rules and
 institutional context.
 
-## Contributing
+---
 
-1. Create an issue or pick an existing one (see `issues.md`).
+## 🧰 Technologies
+
+- **Backend**: FastAPI (Python)
+- **Database**: PostgreSQL with SQLAlchemy ORM
+- **Migrations**: Alembic
+- **Testing**: pytest
+- **IoT**: ESP32, Flask
+- **Documentation**: OpenAPI/Swagger
+
+---
+
+## 🤝 Contributing
+
+1. Create an issue or pick an existing one (see GitHub Issues).
 2. Branch from `main`: `git checkout -b feature/your-feature`.
 3. Follow the layered structure (`api`, `services`, `repositories`, `models`) to
    keep contributions organised.
 4. Write tests and run `pytest backend/tests` before opening a pull request.
 5. Document behaviour changes in code docstrings or the project docs.
 
-## License
+---
+
+## 📄 License
 
 MIT, Apache
 
-## Maintainers
+## 👥 Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
