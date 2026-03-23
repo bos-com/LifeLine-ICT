@@ -127,3 +127,15 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+
+## 📡 API Documentation
+
+Full API documentation is available here:
+
+👉 /docs/api.md
+
+This includes:
+- All endpoints  
+- Request and response examples  
+- Authentication details  
+- Testing guidance  
