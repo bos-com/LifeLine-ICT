@@ -127,3 +127,11 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+
+
+## 🤝 How to Contribute
+We welcome contributions from BSCT students!
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/your-feature`).
+3. Commit your changes.
+4. Push to your branch and open a Pull Request.
