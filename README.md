@@ -1,21 +1,21 @@
 LifeLine-ICT
 Project Summary
-LifeLine-ICT is a digital infrastructure management platform designed to support university ICT departments. The system tracks strategic ICT projects, inventory assets, IoT deployments, and maintenance activities to ensure digital services remain reliable for students and researchers. This repository contains the code for the IoT device layer, backend APIs, and documentation required for faculties to adapt the platform to their own campuses.
+LifeLine-ICT is a digital infrastructure management platform that supports the Uganda University ICT department. The system tracks strategic ICT projects, inventory assets, IoT deployments, and the maintenance activities that keep digital services reliable for students and researchers. The repository contains code for the IoT device layer, the backend APIs, and supporting documentation so faculties can adapt the platform to their own campuses.
 
 High-Level Architecture
-The solution consists of five collaborating layers:
+The solution comprises five collaborating layers:
 
-IoT Layer: ESP32-based sensor nodes that send telemetry to a lightweight Flask logger (iot/logging).
+IoT Layer: ESP32-based sensor nodes send telemetry to a lightweight Flask logger (iot/logging).
 
-Backend APIs: A FastAPI service (backend/app) providing CRUD endpoints for projects, resources, locations, maintenance tickets, and sensor sites.
+Backend APIs: A FastAPI service (backend/app) exposes CRUD endpoints for projects, resources, locations, maintenance tickets, and sensor sites.
 
-GIS & Analytics: Future modules intended to combine telemetry and asset data for dashboards and risk assessments.
+GIS & Analytics: Future modules will combine telemetry and asset data to power dashboards and risk assessments.
 
-Frontend: Web dashboards and mobile applications that consume the backend APIs.
+Frontend: Web dashboards and mobile apps consume the backend APIs.
 
-Deployment: Infrastructure-as-code scripts to package the stack for on-campus or cloud hosting.
+Deployment: Infrastructure-as-code scripts will package the stack for on-campus or cloud hosting.
 
-Refer to docs/backend_crud_plan.md for the architectural rationale regarding the CRUD API implementation.
+Consult docs/backend_crud_plan.md for the architectural rationale that guided Issue #5 (CRUD API implementation).
 
 Module Overview
 iot/: Firmware sketches and logging scripts for field sensors.
@@ -24,7 +24,7 @@ backend/: FastAPI application, domain models, services, and tests.
 
 docs/: Supplemental guides and design notes.
 
-Planned Directories: Frontend, GIS, and Deployment modules will be added as the initiative matures.
+Additional Directories: Frontend, GIS, and Deployment directories will be populated as the broader initiative matures.
 
 Backend Service
 Prerequisites
@@ -35,63 +35,47 @@ pip or uv for dependency management
 Optional: uvicorn CLI for local development
 
 Installation
-Bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r backend/requirements.txt
 Running the API
-Bash
-uvicorn backend.app.main:app --reload
-The service runs on http://127.0.0.1:8000 by default. Interactive OpenAPI documentation is available at http://127.0.0.1:8000/docs.
+The service listens on http://127.0.0.1:8000 by default. OpenAPI documentation is available at http://127.0.0.1:8000/docs.
 
 Core Endpoints
-Entity	Base Path	Notes
-Projects	/api/v1/projects	CRUD with pagination and search functionality.
-ICT Resources	/api/v1/resources	Validates project/location references and enforces ticket rules.
-Locations	/api/v1/locations	CRUD with geographic metadata.
-Maintenance Tickets	/api/v1/maintenance-tickets	Requires resolution metadata when closing a ticket.
-Sensor Sites	/api/v1/sensor-sites	Links IoT deployments to resources, projects, and locations.
-All list endpoints support limit, offset, and search query parameters and return pagination metadata.
+Each list endpoint accepts limit, offset, and search query parameters and returns pagination metadata to keep API consumers informed.
 
 Running Tests
-Bash
-pytest backend/tests
-The test suite utilizes an in-memory SQLite database and covers service-level rules, such as preventing resource deletion while maintenance tickets remain open.
+The suite provisions an in-memory SQLite database and covers both service-level rules (such as blocking resource deletion while tickets remain open) and API contracts.
 
 Database Migrations
-This project uses Alembic for database migrations.
+This project uses  for database migrations.
 
-To create a new migration:
+To create a new migration, run:
 
-Bash
-alembic revision --autogenerate -m "migration_message"
-To apply migrations:
+To apply migrations to the database, run:
 
-Bash
-alembic upgrade head
 Data Model Highlights
-The backend models capture several key relationships:
+The backend models capture the following relationships:
 
 Projects aggregate ICT resources and sensor sites.
 
-Resources can link to projects and locations and host sensor deployments.
+Resources optionally link to projects and locations, and can host sensor deployments.
 
-Maintenance Tickets are assigned to resources and require closure notes upon resolution.
+Maintenance tickets belong to resources and require closure notes when marked resolved.
+
+Consult the service-layer docstrings for detailed business rules and institutional context.
 
 Contributing
-Create a new issue or select an existing one from the issue tracker.
+Create an issue or pick an existing one (see issues.md).
 
-Branch from main: git checkout -b feature/your-feature-name.
+Branch from main: git checkout -b feature/your-feature.
 
-Maintain the layered structure (api, services, repositories, models) to keep the codebase organized.
+Follow the layered structure (api, services, repositories, models) to keep contributions organized.
 
-Write tests and verify they pass using pytest backend/tests before opening a pull request.
+Write tests and run pytest backend/tests before opening a pull request.
 
-Document any behavior changes in code docstrings or project documentation.
+Document behavior changes in code docstrings or the project docs.
 
 License
-This project is dual-licensed under MIT and Apache licenses.
-
+Licensed under MIT and Apache.
+git add .
 Maintainers
 Muwanga Erasto Kosea
 
