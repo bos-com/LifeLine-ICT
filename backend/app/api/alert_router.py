@@ -26,7 +26,7 @@ def get_alert_service(session: AsyncSession = Depends(get_session)) -> AlertServ
     return AlertService(alert_repository)
 
 
-@router.post("", response_model=AlertRead)
+@router.post("", response_model=AlertRead | None)
 async def create_alert(
     sensor_id: int,
     metric: str,

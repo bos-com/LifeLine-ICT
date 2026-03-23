@@ -12,4 +12,4 @@ class AlertRead(BaseSchema):
     metric: str
     value: float
     threshold: float
-    created_at: datetime
+    timestamp: datetime

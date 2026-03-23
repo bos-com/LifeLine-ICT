@@ -59,15 +59,22 @@ uvicorn backend.app.main:app --reload
 The service listens on `http://127.0.0.1:8000` by default. OpenAPI
 documentation is available at `http://127.0.0.1:8000/docs`.
 
+Detailed endpoint documentation with request/response examples, authentication
+flow, and testing steps is available at
+`docs/backend_api_reference.md`.
+
 ### Core Endpoints
 
 | Entity | Base Path | Notes |
 | --- | --- | --- |
+| Authentication | `/api/v1/auth` | User registration + token issuance |
+| Health | `/health`, `/api/v1/analytics/health` | Public readiness checks |
 | Projects | `/api/v1/projects` | CRUD with pagination & search |
 | ICT Resources | `/api/v1/resources` | Validates project/location references and enforces ticket rules |
 | Locations | `/api/v1/locations` | CRUD with geo metadata |
 | Maintenance Tickets | `/api/v1/maintenance-tickets` | Requires resolution metadata when closing a ticket |
 | Sensor Sites | `/api/v1/sensor-sites` | Links IoT deployments to resources, projects, and locations |
+| Alerts | `/api/v1/alerts` | Sensor-threshold alert creation and lookup |
 
 Each list endpoint accepts `limit`, `offset`, and `search` query parameters and
 returns pagination metadata to keep API consumers informed.
