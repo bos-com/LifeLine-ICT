@@ -44,10 +44,41 @@ issue `#5` (CRUD API implementation).
 
 ### Installation
 
+#### For Linux/macOS
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r backend/requirements.txt
+```
+
+#### For Windows
+
+```powershell
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+.\.venv\Scripts\activate
+
+# Install dependencies
+pip install -r backend\requirements.txt
+```
+
+#### Cross-platform Alternative (using uv)
+
+```bash
+# Install uv if not already installed
+pip install uv
+
+# Create and activate virtual environment
+uv venv
+source .venv/bin/activate  # Linux/macOS
+# OR
+.\.venv\Scripts\activate   # Windows
+
+# Install dependencies
+uv pip install -r backend/requirements.txt
 ```
 
 ### Running the API
@@ -119,6 +150,60 @@ institutional context.
    keep contributions organised.
 4. Write tests and run `pytest backend/tests` before opening a pull request.
 5. Document behaviour changes in code docstrings or the project docs.
+
+## Platform-Specific Notes
+
+### Windows Development
+
+- Use PowerShell or Command Prompt for running commands
+- Ensure Python is added to PATH during installation
+- Consider using Windows Subsystem for Linux (WSL) for better compatibility
+- Some Python packages may require Microsoft Visual C++ Build Tools
+
+### Common Windows Issues
+
+**1. Virtual Environment Activation**
+```powershell
+# If activation fails, try:
+.\.venv\Scripts\activate.ps1
+
+# If PowerShell execution policy is restricted:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+**2. Path Issues**
+```powershell
+# Use backslashes for Windows paths
+pip install -r backend\requirements.txt
+
+# Or use forward slashes (git bash, wsl)
+pip install -r backend/requirements.txt
+```
+
+**3. Port Already in Use**
+```powershell
+# Find process using port 8000
+netstat -ano | findstr :8000
+
+# Kill the process
+taskkill /PID <PID> /F
+
+# Or use different port
+uvicorn backend.app.main:app --reload --port 8001
+```
+
+### Linux/macOS Development
+
+- Use your preferred shell (bash, zsh, fish)
+- Ensure Python 3.11+ is installed via package manager or pyenv
+- Consider using `uv` for faster dependency management
+
+### Cross-Platform Development
+
+- Use forward slashes in Python code for file paths
+- Test on multiple platforms when possible
+- Use `pathlib` for cross-platform path handling
+- Consider Docker for consistent development environments
 
 ## License
 
