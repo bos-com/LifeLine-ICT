@@ -1,3 +1,4 @@
+"""Alert API routes for sensor monitoring and notifications."""
 
 from __future__ import annotations
 

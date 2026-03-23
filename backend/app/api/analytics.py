@@ -1,4 +1,4 @@
-"""Analytics API routes."""
+"""Analytics API routes for metrics and reporting."""
 
 from __future__ import annotations
 
@@ -8,19 +8,17 @@ router = APIRouter(prefix="/api/v1/analytics", tags=["Analytics"])
 
 
 @router.get(
-    "/health",
-    tags=["health"],
+    "/dashboard",
+    tags=["analytics"],
 )
-async def healthcheck() -> dict[str, str]:
+async def get_dashboard_summary() -> dict[str, str]:
     """
-    Provide a basic health indicator confirming application availability.
+    Provide a summary of key metrics for the dashboard.
 
     Returns
     -------
     dict[str, str]
-        JSON payload with a static status. The endpoint is intentionally
-        lightweight to support campus monitoring systems and classroom
-        demonstrations.
+        Summary statistics for projects, resources, and tickets.
     """
 
-    return {"status": "ok"}
+    return {"status": "dashboard_endpoint_placeholder"}

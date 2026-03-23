@@ -7,6 +7,7 @@ instantiate isolated application instances while injecting database overrides.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
 from .core.logging import configure_logging
@@ -56,6 +57,15 @@ def create_app() -> FastAPI:
 
     errors.register_exception_handlers(app)
 
+    # Configure CORS for frontend integration
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     app.include_router(projects_router)
     app.include_router(resources_router)
     app.include_router(locations_router)
@@ -65,7 +75,13 @@ def create_app() -> FastAPI:
     app.include_router(alert_router)
     app.include_router(auth_router)
 
-    @app.get("/health", tags=["health"])
+    @app.get("/", tags=["root"])
+    async def root_redirect():
+        """Redirect root URL to API documentation."""
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(url="/docs")
+
+    @app.get("/api/v1/health", tags=["health"])
     async def healthcheck() -> dict[str, str]:
         """
         Provide a basic health indicator confirming application availability.

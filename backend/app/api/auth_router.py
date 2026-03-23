@@ -1,3 +1,4 @@
+"""Authentication API routes for user login and registration."""
 
 from __future__ import annotations
 
@@ -5,11 +6,20 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core.database import get_session
 from ..repositories.user_repository import UserRepository
 from ..services.auth_service import ACCESS_TOKEN_EXPIRE_MINUTES, AuthService
+
+
+class UserCreate(BaseModel):
+    """Schema for user creation."""
+
+    username: str
+    password: str
+
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Authentication"])
 
@@ -40,8 +50,9 @@ async def login_for_access_token(
 
 @router.post("/users")
 async def create_user(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    user_data: UserCreate,
     auth_service: AuthService = Depends(get_auth_service),
 ) -> dict[str, str]:
-    user = await auth_service.create_user(form_data.username, form_data.password)
+    """Create a new user with proper credentials."""
+    user = await auth_service.create_user(user_data.username, user_data.password)
     return {"username": user.username}
