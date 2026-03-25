@@ -127,3 +127,7 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+## Setup Guide
+1. Clone the project
+2. Install dependencies
+3. Run the system
