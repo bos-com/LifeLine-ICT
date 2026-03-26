@@ -8,6 +8,8 @@ inventory assets, IoT deployments, and the maintenance activities that keep
 digital services reliable for students and researchers. The repository contains
 code for the IoT device layer, the backend APIs, and supporting documentation so
 faculties can adapt the platform to their own campuses.
+# LifeLine-ICT Setup Guide
+Updated instructions for branch-based development.
 
 ### High-Level Architecture
 
