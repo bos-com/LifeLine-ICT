@@ -1,27 +1,25 @@
-# IoT Logging Server
+# IoT Sensor Logger
 
-This is a simple Flask-based server for ingesting sensor data from IoT devices (e.g., ESP32).
+Lightweight Flask service that receives telemetry from ESP32 sensor nodes
+and stores it in SQLite for the LifeLine-ICT platform.
 
-## Usage
+## Run
 
-1. Install dependencies:
-   ```bash
-   pip install flask
-   ```
-2. Run the server:
-   ```bash
-   python log_data.py
-   ```
-3. The server will listen on port 5000 for POST requests to `/data`.
-
-## Example Payload
-```
-{
-  "sensor_id": 1,
-  "metric": "temperature",
-  "value": 23.5,
-  "timestamp": "2025-10-11T12:00:00Z"
-}
+```bash
+pip install -r requirements.txt
+python app.py
 ```
 
-All received data is logged to `logs/sensor_data.log`.
+## Endpoints
+
+- `GET  /health` — Check service is running
+- `POST /log`    — Submit sensor telemetry (JSON)
+- `GET  /logs`   — View last 50 telemetry records
+
+## Sample Request
+
+```bash
+curl -X POST http://localhost:5000/log \
+  -H "Content-Type: application/json" \
+  -d '{"sensor_id":"ESP32-001","temperature":24.5,"humidity":68.2,"flood_level":12.3}'
+```
