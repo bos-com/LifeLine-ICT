@@ -46,7 +46,13 @@ issue `#5` (CRUD API implementation).
 
 ```bash
 python -m venv .venv
+
+# macOS/Linux/Git Bash
 source .venv/bin/activate
+
+# Windows PowerShell
+.\.venv\Scripts\activate
+
 pip install -r backend/requirements.txt
 ```
 
@@ -120,9 +126,16 @@ institutional context.
 4. Write tests and run `pytest backend/tests` before opening a pull request.
 5. Document behaviour changes in code docstrings or the project docs.
 
+## Backend Setup and .env Guidance
+
+For a step-by-step setup including environment variable handling, see:
+[`docs/backend-setup.md`](docs/backend-setup.md)
+
 ## License
 
-MIT, Apache
+This project is distributed under the **MIT License**.
+If additional licenses are introduced for specific subcomponents, they should be
+declared explicitly with scope and rationale.
 
 ## Maintainers
 
