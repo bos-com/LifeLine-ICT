@@ -41,6 +41,10 @@ issue `#5` (CRUD API implementation).
 - Python 3.11+
 - `pip` or `uv` for dependency management
 - Optional: `uvicorn` CLI for local development
+### Clone the repository
+git clone https://github.com/El-Fati/LifeLine-ICT.git
+
+cd LifeLine-ICT
 
 ### Installation
 
