@@ -1,5 +1,12 @@
 # LifeLine-ICT
 
+## 📋 Table of Contents
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 ## Project Summary
 
 LifeLine-ICT is a digital infrastructure management platform that supports the
@@ -56,7 +63,7 @@ pip install -r backend/requirements.txt
 uvicorn backend.app.main:app --reload
 ```
 
-The service listens on `http://127.0.0.1:8000` by default. OpenAPI
+The service listens on `http://127.0.0.1:8000` by default, OpenAPI
 documentation is available at `http://127.0.0.1:8000/docs`.
 
 ### Core Endpoints
@@ -127,3 +134,41 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+
+
+## 🤝 How to Contribute
+We welcome contributions from BSCT students!
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/your-feature`).
+3. Commit your changes.
+4. Push to your branch and open a Pull Request.
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+|----------|--------------|
+| Frontend | React, Tailwind CSS |
+| Backend | Node.js, Express |
+| Database | PostgreSQL |
+| Authentication | JWT |
+| Testing | Jest, React Testing Library |
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js (v16+)
+- npm or yarn
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/LifeLine-ICT.git
+cd LifeLine-ICT
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
