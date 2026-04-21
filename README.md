@@ -127,3 +127,21 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+## 🚀 Setup Guide
+
+Follow these steps to run the LifeLine-ICT project locally.
+
+### 🔹 Prerequisites
+
+Ensure you have the following installed:
+- Git
+- Node.js / Java / Python (depending on project stack)
+- Package manager (npm / pip / maven)
+
+---
+
+### 🔹 Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/your-username/LifeLine-ICT.git
+cd LifeLine-ICT
