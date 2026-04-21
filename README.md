@@ -1,3 +1,37 @@
+# 💡 LifeLine-ICT
+
+## 📖 Project Overview
+LifeLine-ICT is an ICT-based platform designed to improve communication, service delivery, and data management within organizations. The system helps streamline operations, enhance accessibility, and support efficient information sharing using modern technologies.
+
+---
+
+## 🚀 Features
+- User-friendly interface  
+- Secure data management  
+- Real-time communication support  
+- Scalable and modular design  
+- Cross-platform accessibility  
+
+---
+
+## 🛠️ Prerequisites
+Before running this project, ensure you have the following installed:
+
+- Node.js (v14 or higher)  
+- npm or yarn  
+- Git  
+- Database system (MySQL or PostgreSQL)  
+- Java (if required by backend)  
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/<your-username>/LifeLine-ICT.git
+cd LifeLine-ICT
+
 # LifeLine-ICT
 
 ## Project Summary
