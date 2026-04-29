@@ -127,3 +127,27 @@ MIT, Apache
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+
+## Project Overview
+
+LifeLine-ICT is a technology solution designed to support community development and emergency response.
+
+### Features
+- Emergency alert system
+- Community resource mapping
+- Real-time notifications
+- Offline capability
+
+### Setup Instructions
+
+```bash
+# Clone the repository
+git clone https://github.com/bos-com/LifeLine-ICT.git
+# Install dependencies
+npm install
+# Run the application
+npm start
+```
+
+### Contributing
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
