@@ -13,14 +13,14 @@ faculties can adapt the platform to their own campuses.
 
 The solution comprises five collaborating layers:
 
-- **IoT layer** – ESP32-based sensor nodes send telemetry to a lightweight Flask
+- **IoT layer** - ESP32-based sensor nodes send telemetry to a lightweight Flask
   logger (`iot/logging`).
-- **Backend APIs** – A FastAPI service (`backend/app`) exposes CRUD endpoints for
+- **Backend APIs** - A FastAPI service (`backend/app`) exposes CRUD endpoints for
   projects, resources, locations, maintenance tickets, and sensor sites.
-- **GIS & Analytics** – Future modules will combine telemetry and asset data to
+- **GIS & Analytics** - Future modules will combine telemetry and asset data to
   power dashboards and risk assessments.
-- **Frontend** – Web dashboards and mobile apps consume the backend APIs.
-- **Deployment** – Infrastructure-as-code scripts will package the stack for on
+- **Frontend** - Web dashboards and mobile apps consume the backend APIs.
+- **Deployment** - Infrastructure-as-code scripts will package the stack for on
   campus or cloud hosting.
 
 Consult `docs/backend_crud_plan.md` for the architectural rationale that guided
@@ -28,11 +28,15 @@ issue `#5` (CRUD API implementation).
 
 ### Module Overview
 
-- `iot/` – Firmware sketches and logging scripts for field sensors.
-- `backend/` – FastAPI application, domain models, services, and tests.
-- `docs/` – Supplemental guides and design notes.
+- `iot/` - Firmware sketches and logging scripts for field sensors.
+- `backend/` - FastAPI application, domain models, services, and tests.
+- `docs/` - Supplemental guides and design notes.
 - Additional directories (frontend, gis, deployment) will be filled as the
   broader initiative matures.
+
+Backend-specific onboarding now lives in [`backend/README.md`](backend/README.md)
+and the centralized endpoint reference is documented in
+[`docs/API_REFERENCE.md`](docs/API_REFERENCE.md).
 
 ## Backend Service (Issue #5 Deliverable)
 
@@ -122,8 +126,9 @@ institutional context.
 
 ## License
 
-MIT, Apache
+License is not yet specified. The README currently lists "MIT, Apache", which is ambiguous. Please add a LICENSE file to clarify the intended license.
 
 ## Maintainers
 
 Muwanga Erasto Kosea, Ouma Ronald
+
