@@ -30,6 +30,17 @@ def _int_from_env(var_name: str, default: int) -> int:
         return default
 
 
+def _csv_from_env(var_name: str, default: tuple[str, ...]) -> tuple[str, ...]:
+    """Read a comma-separated string list from the environment."""
+
+    raw_value = os.getenv(var_name)
+    if raw_value is None:
+        return default
+
+    values = tuple(value.strip() for value in raw_value.split(",") if value.strip())
+    return values or default
+
+
 @dataclass
 class Settings:
     """
@@ -51,6 +62,11 @@ class Settings:
     pagination_max_limit:
         Safety guard to prevent accidental data dumps that could strain shared
         infrastructure.
+    cors_allowed_origins:
+        Browser origins allowed to call the API. Production deployments should
+        configure this explicitly for their frontend domains.
+    cors_allow_credentials:
+        Whether browsers may include credentials on cross-origin requests.
     """
 
     database_url: str = os.getenv(
@@ -70,6 +86,19 @@ class Settings:
         "LIFELINE_PAGINATION_MAX_LIMIT",
         100,
     )
+    cors_allowed_origins: tuple[str, ...] = _csv_from_env(
+        "LIFELINE_CORS_ALLOWED_ORIGINS",
+        (
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ),
+    )
+    cors_allow_credentials: bool = os.getenv(
+        "LIFELINE_CORS_ALLOW_CREDENTIALS",
+        "true",
+    ).lower() in {"1", "true", "yes", "on"}
 
 
 settings = Settings()

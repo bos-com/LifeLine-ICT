@@ -59,6 +59,28 @@ uvicorn backend.app.main:app --reload
 The service listens on `http://127.0.0.1:8000` by default. OpenAPI
 documentation is available at `http://127.0.0.1:8000/docs`.
 
+### Backend Environment Variables
+
+The backend reads configuration from environment variables or a local `.env`
+file. Defaults are suitable for local development.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `LIFELINE_DATABASE_URL` | `sqlite+aiosqlite:///./lifeline.db` | SQLAlchemy database connection string |
+| `LIFELINE_API_VERSION` | `0.1.0` | Version shown in the OpenAPI schema |
+| `LIFELINE_CONTACT_EMAIL` | `ict-support@lifeline.example.edu` | API support contact |
+| `LIFELINE_PAGINATION_DEFAULT_LIMIT` | `20` | Default page size for list endpoints |
+| `LIFELINE_PAGINATION_MAX_LIMIT` | `100` | Maximum accepted page size |
+| `LIFELINE_CORS_ALLOWED_ORIGINS` | Localhost frontend origins | Comma-separated browser origins allowed to call the API |
+| `LIFELINE_CORS_ALLOW_CREDENTIALS` | `true` | Allows browser credentials on cross-origin requests |
+
+Example `.env` entry for a deployed frontend:
+
+```bash
+LIFELINE_CORS_ALLOWED_ORIGINS=https://ict.example.edu,https://admin.ict.example.edu
+LIFELINE_CORS_ALLOW_CREDENTIALS=true
+```
+
 ### Core Endpoints
 
 | Entity | Base Path | Notes |

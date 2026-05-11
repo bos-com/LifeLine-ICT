@@ -4,15 +4,13 @@ from __future__ import annotations
 
 from typing import Generic, List, Optional, TypeVar
 
-from pydantic import BaseModel, Field
-from pydantic.generics import GenericModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class BaseSchema(BaseModel):
     """Base schema that enables ORM compatibility."""
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PaginationQuery(BaseModel):
@@ -56,7 +54,7 @@ class PaginationMeta(BaseModel):
 T = TypeVar("T")
 
 
-class PaginatedResponse(GenericModel, Generic[T]):
+class PaginatedResponse(BaseModel, Generic[T]):
     """
     Envelope for paginated API responses.
 

@@ -7,6 +7,7 @@ instantiate isolated application instances while injecting database overrides.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
 from .core.logging import configure_logging
@@ -52,6 +53,14 @@ def create_app() -> FastAPI:
             "name": "MIT License",
             "identifier": "MIT",
         },
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(settings.cors_allowed_origins),
+        allow_credentials=settings.cors_allow_credentials,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "Accept"],
     )
 
     errors.register_exception_handlers(app)

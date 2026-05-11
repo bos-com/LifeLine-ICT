@@ -18,6 +18,11 @@ def user_repository() -> UserRepository:
 @pytest.mark.asyncio
 async def test_create_user(user_repository: UserRepository) -> None:
     auth_service = AuthService(user_repository)
+    user_repository.create.return_value = User(
+        username="testuser",
+        hashed_password="hashed-testpassword",
+    )
+
     user = await auth_service.create_user("testuser", "testpassword")
 
     user_repository.create.assert_called_once()
